@@ -7,21 +7,21 @@ import random
 pygame.init()
 def generate():
     '''Randomly generates a Sudoku grid/board'''
-    while True:  #return will interrupt the loop
+    while True:  
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
         board = [[0 for i in range(9)] for j in range (9)]
-        # puts one random number, then solves the board to generate a board
+       
         for i in range(9):
             for j in range(9):
                 if random.randint(1, 10) >= 5:
-                    board[i][j] = random.randint(1, 9)  #plug in random number at random spot
+                    board[i][j] = random.randint(1, 9)  
                     if valid(board, (i, j), board[i][j]):
                         continue
                     else:
                         board[i][j] = 0
-        partialBoard = deepcopy(board) #copies board without being modified after solve is called
+        partialBoard = deepcopy(board)
         if solve(board):
             return partialBoard
 class Board:
@@ -37,17 +37,17 @@ class Board:
         '''Fills the board with Tiles and renders their values'''
         for i in range(9):
             for j in range(9):
-                if j%3 == 0 and j != 0: #vertical lines
+                if j%3 == 0 and j != 0:
                     pygame.draw.line(self.window, (0, 0, 0), ((j//3)*180, 0), ((j//3)*180, 540), 4)
 
-                if i%3 == 0 and i != 0: #horizontal lines
+                if i%3 == 0 and i != 0:
                     pygame.draw.line(self.window, (0, 0, 0), (0, (i//3)*180), (540, (i//3)*180), 4)
 
                 self.tiles[i][j].draw((0,0,0), 1)
 
-                if self.tiles[i][j].value != 0: #don't draw 0s on the grid
-                    self.tiles[i][j].display(self.tiles[i][j].value, (21+(j*60), (16+(i*60))), (0, 0, 0))  #20,5 are the coordinates of the first tile
-        #bottom-most line
+                if self.tiles[i][j].value != 0: 
+                    self.tiles[i][j].display(self.tiles[i][j].value, (21+(j*60), (16+(i*60))), (0, 0, 0)) 
+
         pygame.draw.line(self.window, (0, 0, 0), (0, ((i+1) // 3) * 180), (540, ((i+1) // 3) * 180), 4)
 
     def deselect(self, tile):
@@ -63,7 +63,7 @@ class Board:
         self.draw_board()
         for i in range(9):
             for j in range(9):
-                if self.tiles[j][i].selected:  #draws the border on selected tiles
+                if self.tiles[j][i].selected:  
                     self.tiles[j][i].draw((50, 205, 50), 4)
 
                 elif self.tiles[i][j].correct:
@@ -72,27 +72,27 @@ class Board:
                 elif self.tiles[i][j].incorrect:
                     self.tiles[j][i].draw((255, 0, 0), 4)
 
-        if len(keys) != 0: #draws inputs that the user places on board but not their final value on that tile
+        if len(keys) != 0: 
             for value in keys:
                 self.tiles[value[0]][value[1]].display(keys[value], (21+(value[0]*60), (16+(value[1]*60))), (128, 128, 128))
 
         if wrong > 0:
-            font = pygame.font.SysFont('Bauhaus 93', 30) #Red X
+            font = pygame.font.SysFont('Bauhaus 93', 30) 
             text = font.render('X', True, (255, 0, 0))
             self.window.blit(text, (10, 554))
 
-            font = pygame.font.SysFont('Bahnschrift', 40) #Number of Incorrect Inputs
+            font = pygame.font.SysFont('Bahnschrift', 40) 
             text = font.render(str(wrong), True, (0, 0, 0))
             self.window.blit(text, (32, 542))
 
-        font = pygame.font.SysFont('Bahnschrift', 40) #Time Display
+        font = pygame.font.SysFont('Bahnschrift', 40) 
         text = font.render(str(time), True, (0, 0, 0))
         self.window.blit(text, (388, 542))
         pygame.display.flip()
 
     def visualSolve(self, wrong, time):
         '''Showcases how the board is solved via backtracking'''
-        for event in pygame.event.get(): #so that touching anything doesn't freeze the screen
+        for event in pygame.event.get(): 
             if event.type == pygame.QUIT:
                 exit()
 
@@ -105,7 +105,7 @@ class Board:
                 self.board[empty[0]][empty[1]] = nums+1
                 self.tiles[empty[0]][empty[1]].value = nums+1
                 self.tiles[empty[0]][empty[1]].correct = True
-                pygame.time.delay(63) #show tiles at a slower rate
+                pygame.time.delay(63) 
                 self.redraw({}, wrong, time)
 
                 if self.visualSolve(wrong, time):
@@ -120,10 +120,10 @@ class Board:
 
     def hint(self, keys):
         '''Shows a random empty tile's solved value as a hint'''
-        while True: #keeps generating i,j coords until it finds a valid random spot
+        while True: 
             i = random.randint(0, 8)
             j = random.randint(0, 8)
-            if self.board[i][j] == 0: #hint spot has to be empty
+            if self.board[i][j] == 0:
                 if (j,i) in keys:
                     del keys[(j,i)]
                 self.board[i][j] = self.solvedBoard[i][j]
@@ -137,7 +137,7 @@ class Tile:
     def __init__(self, value, window, x1, y1):
         self.value = value
         self.window = window
-        self.rect = pygame.Rect(x1, y1, 60, 60) #dimensions for the rectangle
+        self.rect = pygame.Rect(x1, y1, 60, 60) 
         self.selected = False
         self.correct = False
         self.incorrect = False
@@ -154,7 +154,7 @@ class Tile:
 
     def clicked(self, mousePos):
         '''Checks if a tile has been clicked'''
-        if self.rect.collidepoint(mousePos): #checks if a point is inside a rect
+        if self.rect.collidepoint(mousePos): 
             self.selected = True
         return self.selected
 
@@ -166,7 +166,7 @@ def main():
     icon = pygame.image.load("icon.png")
     pygame.display.set_icon(icon)
 
-    #loading screen when generating grid
+
     font = pygame.font.SysFont('Bahnschrift', 40)
     text = font.render("Generating", True, (0, 0, 0))
     screen.blit(text, (175, 245))
@@ -176,10 +176,10 @@ def main():
     screen.blit(text, (230, 290))
     pygame.display.flip()
 
-    #initiliaze values and variables
+    
     wrong = 0
     board = Board(screen)
-    selected = -1,-1 #NoneType error when selected = None, easier to just format as a tuple whose value will never be used
+    selected = -1,-1 
     keyDict = {}
     running = True
     startTime = time.time()
@@ -187,7 +187,7 @@ def main():
         elapsed = time.time() - startTime
         passedTime = time.strftime("%H:%M:%S", time.gmtime(elapsed))
 
-        if board.board == board.solvedBoard: #user has solved the board
+        if board.board == board.solvedBoard: 
             for i in range(9):
                 for j in range(9):
                     board.tiles[i][j].selected = False
@@ -195,16 +195,15 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit() #so that it doesnt go to the outer run loop
+                exit() 
 
-            elif event.type == pygame.MOUSEBUTTONUP: #allow clicks only while the board hasn't been solved
+            elif event.type == pygame.MOUSEBUTTONUP: 
                 mousePos = pygame.mouse.get_pos()
                 for i in range(9):
                     for j in range (9):
                         if board.tiles[i][j].clicked(mousePos):
                             selected = i,j
-                            board.deselect(board.tiles[i][j]) #deselects every tile except the one currently clicked
-
+                            board.deselect(board.tiles[i][j]) 
             elif event.type == pygame.KEYDOWN:
                 if board.board[selected[1]][selected[0]] == 0 and selected != (-1,-1):
                     if event.key == pygame.K_1:
@@ -234,21 +233,20 @@ def main():
                     if event.key == pygame.K_9:
                         keyDict[selected] = 9
 
-                    elif event.key == pygame.K_BACKSPACE or event.key == pygame.K_DELETE:  # clears tile out
+                    elif event.key == pygame.K_BACKSPACE or event.key == pygame.K_DELETE: 
                         if selected in keyDict:
                             board.tiles[selected[1]][selected[0]].value = 0
                             del keyDict[selected]
 
                     elif event.key == pygame.K_RETURN:
                         if selected in keyDict:
-                            if keyDict[selected] != board.solvedBoard[selected[1]][selected[0]]: #clear tile when incorrect value is inputted
+                            if keyDict[selected] != board.solvedBoard[selected[1]][selected[0]]: 
                                 wrong += 1
                                 board.tiles[selected[1]][selected[0]].value = 0
                                 del keyDict[selected]
                                 break
-                            #valid and correct entry into cell
-                            board.tiles[selected[1]][selected[0]].value = keyDict[selected] #assigns current grid value
-                            board.board[selected[1]][selected[0]] = keyDict[selected] #assigns to actual board so that the correct value can't be modified
+                            board.tiles[selected[1]][selected[0]].value = keyDict[selected] 
+                            board.board[selected[1]][selected[0]] = keyDict[selected] 
                             del keyDict[selected]
 
                 if event.key == pygame.K_h:
@@ -258,16 +256,16 @@ def main():
                     for i in range(9):
                         for j in range(9):
                             board.tiles[i][j].selected = False
-                    keyDict = {}  #clear keyDict out
+                    keyDict = {} 
                     board.visualSolve(wrong, passedTime)
                     for i in range(9):
                         for j in range(9):
                             board.tiles[i][j].correct = False
-                            board.tiles[i][j].incorrect = False #reset tiles
+                            board.tiles[i][j].incorrect = False
                     running = False
 
         board.redraw(keyDict, wrong, passedTime)
-    while True: #another running loop so that the program ONLY closes when user closes program
+    while True: 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
